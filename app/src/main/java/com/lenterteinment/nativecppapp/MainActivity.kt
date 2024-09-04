@@ -11,9 +11,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var questionTextView: TextView
     private lateinit var answersRadioGroup: RadioGroup
     private lateinit var submitAnswerButton: Button
+    private lateinit var readFromFile: ReadFromFile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize ReadFromFile
+        readFromFile = ReadFromFile(this)
 
         // Create the root layout (LinearLayout)
         val rootLayout = LinearLayout(this).apply {
@@ -67,33 +71,29 @@ class MainActivity : AppCompatActivity() {
         // Set the root layout as the content view of the activity
         setContentView(rootLayout)
 
-        // Rest of your activity logic here
-        // For example, call a method to display a quiz
+        // Display quiz
         displayQuiz()
     }
 
     private fun displayQuiz() {
         // Example quiz data for testing
-        val quiz = arrayOf(
-            "Question 1: What is the capital of France?",
-            "1) Paris", "2) Berlin", "3) Madrid", "4) Rome"
-        )
+        val quiz = readFromFile.getQuizData()
 
         // Display the question
-        questionTextView.text = quiz[0]
+        questionTextView.text = quiz.first
 
         // Clear previous options if any
         answersRadioGroup.removeAllViews()
 
         // Add answer choices
-        for (i in 1 until quiz.size) {
+        for (answer in quiz.second) {
             val radioButton = RadioButton(this).apply {
-                text = quiz[i]
+                text = answer
             }
             answersRadioGroup.addView(radioButton)
         }
 
-        // Handle answer submission (example logic)
+        // Handle answer submission
         submitAnswerButton.setOnClickListener {
             val selectedRadioButtonId = answersRadioGroup.checkedRadioButtonId
             if (selectedRadioButtonId != -1) {
